@@ -6,6 +6,7 @@ Cet utilitaire est une simplifaction de l'installation de WinGet sur toutes vers
 
 # Installation
 Vous devez lancer PowerShell ou Windows Terminal en tant qu'ADMINISTRATEUR ! La méthode recommandée consiste à cliquer avec le bouton droit sur le menu Démarrer et à sélectionner (PowerShell en tant qu'administrateur Windows 10 - Terminal Windows en tant qu'administrateur Windows 11)
+Le script fonctionne parfaitement avec Windows Server 2022
 
 ```bash
 iwr -useb https://raw.githubusercontent.com/sbeteta42/winget/main/winget-install.ps1 | iex
