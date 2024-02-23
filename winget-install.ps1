@@ -1,34 +1,34 @@
 <#PSScriptInfo
 
-.VERSION 1.0
+.VERSION 3.0.1
 
 <#
 .SYNOPSIS
-	Télécharge et installe la dernière version de winget et ses dépendances. Met à  jour la variable PATH si nécessaire.
+	TÃ©lÃ©charge et installe la derniÃ¨re version de winget et ses dÃ©pendances. Met Ã Â  jour la variable PATH si nÃ©cessaire.
 .DESCRIPTION
-	Télécharge et installe la dernière version de winget et ses dépendances. Met à  jour la variable PATH si nécessaire
+	TÃ©lÃ©charge et installe la derniÃ¨re version de winget et ses dÃ©pendances. Met Ã Â  jour la variable PATH si nÃ©cessaire
 
-Ce script est conçu pour ètre simple et facile à  utiliser, éliminant les tracas liés au téléchargement, à  l'installation et à  la configuration manuels de Winget. Pour rendre le Winget nouvellement installé disponible, un redémarrage du système peut ètre nécessaire après avoir exécuté le
-Cette fonction doit ètre exécutée avec des privilèges administratifs.
+Ce script est conÃ§u pour Ã¨tre simple et facile Ã Â  utiliser, Ã©liminant les tracas liÃ©s au tÃ©lÃ©chargement, Ã Â  l'installation et Ã Â  la configuration manuels de Winget. Pour rendre le Winget nouvellement installÃ© disponible, un redÃ©marrage du systÃ¨me peut Ã¨tre nÃ©cessaire aprÃ¨s avoir exÃ©cutÃ© le
+Cette fonction doit Ã¨tre exÃ©cutÃ©e avec des privilÃ¨ges administratifs.
 .EXEMPLE
 installation d'ailes
-.PARAMETER Mode débogage
-     Active le mode débogage, qui affiche des informations supplémentaires pour le débogage.
-.PARAMETER Désactiver le nettoyage
-     Désactive le nettoyage du script et des prérequis après l'installation.
+.PARAMETER Mode dÃ©bogage
+     Active le mode dÃ©bogage, qui affiche des informations supplÃ©mentaires pour le dÃ©bogage.
+.PARAMETER DÃ©sactiver le nettoyage
+     DÃ©sactive le nettoyage du script et des prÃ©requis aprÃ¨s l'installation.
 .PARAMETRE Forcer
-     Assure l'installation de Winget et de ses dépendances, mème si déjà  présentes.
+     Assure l'installation de Winget et de ses dÃ©pendances, mÃ¨me si dÃ©jÃ Â  prÃ©sentes.
 .PARAMETER CheckForUpdate
-     Vérifie si une mise à  jour est disponible pour le script.
+     VÃ©rifie si une mise Ã Â  jour est disponible pour le script.
 Version .PARAMETRE
      Affiche la version du script.
 Aide .PARAMETER
-     Affiche les informations d'aide complètes pour le script.
+     Affiche les informations d'aide complÃ¨tes pour le script.
 .REMARQUES
 Version : 1.0
-Créé par : sbeteta@beteta.org
+CrÃ©Ã© par : sbeteta@beteta.org
 .LIEN
-Site du projet : https://github.com/sbeteta42/winget-install
+Site du projetÂ : https://github.com/sbeteta42/winget-install
 #>
 [CmdletBinding()]
 param (
@@ -41,28 +41,28 @@ param (
 )
 
 # Version
-$CurrentVersion = '1.0'
-$RepoOwner = 'sbeteta42'
+$CurrentVersion = '3.0.1'
+$RepoOwner = 'asheroto'
 $RepoName = 'winget-install'
 $PowerShellGalleryName = 'winget-install'
 
 # Versions
-$ProgressPreference = 'SilentlyContinue' # Supprimer la barre de progression (rend le téléchargement ultra rapide)
+$ProgressPreference = 'SilentlyContinue' # Supprimer la barre de progression (rend le tÃ©lÃ©chargement ultra rapide)
 $ConfirmPreference = 'None' # Supprimer les invites de confirmation
 
-# Afficher la version si -Version est spécifié
+# Afficher la version si -Version est spÃ©cifiÃ©
 if ($Version.IsPresent) {
     $CurrentVersion
     exit 0
 }
 
-# Afficher l'aide complète si -Help est spécifié
+# Afficher l'aide complÃ¨te si -Help est spÃ©cifiÃ©
 if ($Help) {
     Get-Help -Name $MyInvocation.MyCommand.Source -Full
     exit 0
 }
 
-# Afficher $PSVersionTable et Get-Host si -Verbose est spécifié
+# Afficher $PSVersionTable et Get-Host si -Verbose est spÃ©cifiÃ©
 if ($PSBoundParameters.ContainsKey('Verbose') -and $PSBoundParameters['Verbose']) {
     $PSVersionTable
     Get-Host
@@ -74,7 +74,7 @@ function Get-TempFolder {
         Obtient le chemin du dossier temporaire de l'utilisateur actuel.
 
         .DESCRIPTION
-        Cette fonction récupère le chemin du dossier temporaire de l'utilisateur actuel.
+        Cette fonction rÃ©cupÃ¨re le chemin du dossier temporaire de l'utilisateur actuel.
 
         .EXAMPLE
         Get-TempFolder
@@ -85,20 +85,20 @@ function Get-TempFolder {
 function Get-OSInfo {
     <#
         .SYNOPSIS
-        Récupère des informations détaillées sur la version et lÂ’architecture du système dÂ’exploitation.
+        RÃ©cupÃ¨re des informations dÃ©taillÃ©es sur la version et lÃ‚â€™architecture du systÃ¨me dÃ‚â€™exploitation.
 
         .DESCRIPTION
-        Cette fonction interroge à  la fois le registre Windows et la classe Win32_OperatingSystem pour collecter des informations complètes sur le système d'exploitation. Il renvoie des détails tels que l'ID de version, la version d'affichage, le nom, le type (poste de travail/serveur), la version numérique, l'ID d'édition, la version (objet qui inclut les numéros majeurs, mineurs et de build) et l'architecture (architecture du système d'exploitation, pas architecture du processeur). ).
+        Cette fonction interroge Ã Â  la fois le registre Windows et la classe Win32_OperatingSystem pour collecter des informations complÃ¨tes sur le systÃ¨me d'exploitation. Il renvoie des dÃ©tails tels que l'ID de version, la version d'affichage, le nom, le type (poste de travail/serveur), la version numÃ©rique, l'ID d'Ã©dition, la version (objet qui inclut les numÃ©ros majeurs, mineurs et de build) et l'architecture (architecture du systÃ¨me d'exploitation, pas architecture du processeur). ).
         
         .EXAMPLE
         Get-OSInfo
 
-        Cet exemple récupère les détails de la version du système d'exploitation actuel et renvoie un objet avec des propriétés telles que ReleaseId, DisplayVersion, Name, Type, NumericVersion, EditionId, Version et Architecture.
+        Cet exemple rÃ©cupÃ¨re les dÃ©tails de la version du systÃ¨me d'exploitation actuel et renvoie un objet avec des propriÃ©tÃ©s telles que ReleaseId, DisplayVersion, Name, Type, NumericVersion, EditionId, Version et Architecture.
         
         .EXAMPLE
         (Get-OSInfo).Version.Major
 
-        Cet exemple récupère le numéro de version majeure du système d'exploitation. La fonction Get-OSInfo renvoie un objet avec une propriété Version, qui est elle-mème un objet contenant les propriétés Major, Minor et Build. Vous pouvez accéder à  ces sous-propriétés en utilisant la notation par points.
+        Cet exemple rÃ©cupÃ¨re le numÃ©ro de version majeure du systÃ¨me d'exploitation. La fonction Get-OSInfo renvoie un objet avec une propriÃ©tÃ© Version, qui est elle-mÃ¨me un objet contenant les propriÃ©tÃ©s Major, Minor et Build. Vous pouvez accÃ©der Ã Â  ces sous-propriÃ©tÃ©s en utilisant la notation par points.
         
         .EXAMPLE
         $osDetails = Get-OSInfo
@@ -106,10 +106,10 @@ function Get-OSInfo {
         Write-Output "OS Type: $($osDetails.Type)"
         Write-Output "OS Architecture: $($osDetails.Architecture)"
 
-        Cet exemple récupère le numéro de version majeure du système d'exploitation. 
-        La fonction Get-OSInfo renvoie un objet avec une propriété Version, qui est elle-mème un objet contenant les propriétés Major, Minor et Build.
-        Vous pouvez accéder à  ces sous-propriétés en utilisant la notation par points.
-        Cet exemple stocke le résultat de Get-OSInfo dans une variable, puis accède à  diverses propriétés pour imprimer des détails sur le système d'exploitation.
+        Cet exemple rÃ©cupÃ¨re le numÃ©ro de version majeure du systÃ¨me d'exploitation. 
+        La fonction Get-OSInfo renvoie un objet avec une propriÃ©tÃ© Version, qui est elle-mÃ¨me un objet contenant les propriÃ©tÃ©s Major, Minor et Build.
+        Vous pouvez accÃ©der Ã Â  ces sous-propriÃ©tÃ©s en utilisant la notation par points.
+        Cet exemple stocke le rÃ©sultat de Get-OSInfo dans une variable, puis accÃ¨de Ã Â  diverses propriÃ©tÃ©s pour imprimer des dÃ©tails sur le systÃ¨me d'exploitation.
 
     #>
     [CmdletBinding()]
@@ -126,11 +126,11 @@ function Get-OSInfo {
         # Supprimez "Server" de $editionIdValue s'il existe
         $editionIdValue = $editionIdValue -replace "Server", ""
 
-        # Obtenez les détails du système d'exploitation à  l'aide de Get-CimInstance car la clé de registre pour Name n'est pas toujours correcte avec Windows 11
+        # Obtenez les dÃ©tails du systÃ¨me d'exploitation Ã Â  l'aide de Get-CimInstance car la clÃ© de registre pour Name n'est pas toujours correcte avec Windows 11
         $osDetails = Get-CimInstance -ClassName Win32_OperatingSystem
         $nameValue = $osDetails.Caption
 
-        # Obtenez les détails de l'architecture du système d'exploitation (pas du processeur)
+        # Obtenez les dÃ©tails de l'architecture du systÃ¨me d'exploitation (pas du processeur)
         # Obtenez uniquement les chiffres
         $architecture = ($osDetails.OSArchitecture -replace "[^\d]").Trim()
 
@@ -141,10 +141,10 @@ function Get-OSInfo {
             $architecture = "x64"
         }
 
-        # Obtenez le détails de la version du système d'exploitation (en tant qu'objet de version)
+        # Obtenez le dÃ©tails de la version du systÃ¨me d'exploitation (en tant qu'objet de version)
         $versionValue = [System.Environment]::OSVersion.Version
 
-        # Déterminer le type de produit Microsoft
+        # DÃ©terminer le type de produit Microsoft
         # Reference: https://learn.microsoft.com/en-us/dotnet/api/microsoft.powershell.commands.producttype?view=powershellsdk-1.1.0
         if ($osDetails.ProductType -eq 1) {
             $typeValue = "Workstation"
@@ -154,10 +154,10 @@ function Get-OSInfo {
             $typeValue = "Unknown"
         }
 
-        # Extraire la valeur numérique du Name
+        # Extraire la valeur numÃ©rique du Name
         $numericVersion = ($nameValue -replace "[^\d]").Trim()
 
-        # Créer et renvoyer un objet personnalisé avec les propriétés requises
+        # CrÃ©er et renvoyer un objet personnalisÃ© avec les propriÃ©tÃ©s requises
         $result = [PSCustomObject]@{
             ReleaseId      = $releaseIdValue
             DisplayVersion = $displayVersionValue
@@ -171,7 +171,7 @@ function Get-OSInfo {
 
         return $result
     } catch {
-        Write-Error "Impossible d'obtenir les détails de la version du système d'exploitation.`nError: $_"
+        Write-Error "Impossible d'obtenir les dÃ©tails de la version du systÃ¨me d'exploitation.`nError: $_"
         exit 1
     }
 }
@@ -179,7 +179,7 @@ function Get-OSInfo {
 function Get-GitHubRelease {
     <#
         .SYNOPSIS
-        récupère les dernières informations de version d'un référentiel GitHub.
+        rÃ©cupÃ¨re les derniÃ¨res informations de version d'un rÃ©fÃ©rentiel GitHub.
 
         .DESCRIPTION
         This function uses the GitHub API to get information about the latest release of a specified repository, including its version and the date it was published.
@@ -253,18 +253,18 @@ function CheckForUpdate {
 function Write-Section($text) {
     <#
         .SYNOPSIS
-        Imprime un bloc de texte entouré d'un séparateur de section pour une meilleure lisibilité de la sortie.
+        Imprime un bloc de texte entourÃ© d'un sÃ©parateur de section pour une meilleure lisibilitÃ© de la sortie.
 
         .DESCRIPTION
-        Cette fonction prend une entrée de chaà®ne et l'imprime sur la console, entourée d'un séparateur de section composé de caractères de hachage.
-        Il est conçu pour améliorer la lisibilité de la sortie de la console.
+        Cette fonction prend une entrÃ©e de chaÃ Â®ne et l'imprime sur la console, entourÃ©e d'un sÃ©parateur de section composÃ© de caractÃ¨res de hachage.
+        Il est conÃ§u pour amÃ©liorer la lisibilitÃ© de la sortie de la console.
 
         .PARAMETER text
-        Le texte à  imprimer dans le séparateur de section.
+        Le texte Ã Â  imprimer dans le sÃ©parateur de section.
 
         .EXAMPLE
-        Write-Section "Téléchargement de fichiers..."
-       Cette commande imprime le texte "Téléchargement de fichiers..." entouré d'un séparateur de section.
+        Write-Section "TÃ©lÃ©chargement de fichiers..."
+       Cette commande imprime le texte "TÃ©lÃ©chargement de fichiers..." entourÃ© d'un sÃ©parateur de section.
     #>
     Write-Output ""
     Write-Output ("#" * ($text.Length + 4))
@@ -276,18 +276,18 @@ function Write-Section($text) {
 function Get-WingetDownloadUrl {
     <#
         .SYNOPSIS
-        Récupère l'URL de téléchargement de la dernière ressource de version qui correspond à  un modèle spécifié à  partir du référentiel GitHub.
+        RÃ©cupÃ¨re l'URL de tÃ©lÃ©chargement de la derniÃ¨re ressource de version qui correspond Ã Â  un modÃ¨le spÃ©cifiÃ© Ã Â  partir du rÃ©fÃ©rentiel GitHub.
 
         .DESCRIPTION
-        Cette fonction utilise l'API GitHub pour obtenir des informations sur la dernière version du référentiel winget-cli.
-        Il récupère ensuite l'URL de téléchargement de la ressource de version qui correspond à  un modèle spécifié.
+        Cette fonction utilise l'API GitHub pour obtenir des informations sur la derniÃ¨re version du rÃ©fÃ©rentiel winget-cli.
+        Il rÃ©cupÃ¨re ensuite l'URL de tÃ©lÃ©chargement de la ressource de version qui correspond Ã Â  un modÃ¨le spÃ©cifiÃ©.
       
         .PARAMETER Match
-        Le modèle à  faire correspondre dans les noms dâ€™actifs.
+        Le modÃ¨le Ã Â  faire correspondre dans les noms dÃ¢â‚¬â„¢actifs.
 
         .EXAMPLE
         Get-WingetDownloadUrl "msixbundle"
-        Cette commande récupère l'URL de téléchargement de la dernière version de la ressource dont le nom contient Â« msixbundle Â».
+        Cette commande rÃ©cupÃ¨re l'URL de tÃ©lÃ©chargement de la derniÃ¨re version de la ressource dont le nom contient Ã‚Â« msixbundle Ã‚Â».
     #>
     [CmdletBinding()]
     param (
@@ -319,16 +319,16 @@ function Get-WingetDownloadUrl {
 function Get-WingetStatus {
     <#
         .SYNOPSIS
-        Vérifions si Winget est installé.
+        VÃ©rifions si Winget est installÃ©.
 
         .DESCRIPTION
-        Cette fonction vérifie si Winget est installé.
+        Cette fonction vÃ©rifie si Winget est installÃ©.
 
         .EXAMPLE
         Get-WingetStatus
     #>
 
-    # Vérifions si Winget est installé.
+    # VÃ©rifions si Winget est installÃ©.
     $winget = Get-Command -Name winget -ErrorAction SilentlyContinue
 
     # If winget is installed, return $true
@@ -336,26 +336,26 @@ function Get-WingetStatus {
         return $true
     }
 
-    # Si Winget n'est pas installé, return $false
+    # Si Winget n'est pas installÃ©, return $false
     return $false
 }
 
 function Update-PathEnvironmentVariable {
     <#
         .SYNOPSIS
-        Met à  jour la variable d'environnement PATH avec un nouveau chemin pour les niveaux Utilisateur et Machine.
+        Met Ã Â  jour la variable d'environnement PATH avec un nouveau chemin pour les niveaux Utilisateur et Machine.
 
         .DESCRIPTION
-        La fonction ajoutera un nouveau chemin à  la variable d'environnement PATH, en s'assurant qu'il ne s'agit pas d'un doublon.
-        Si le nouveau chemin est déjà  dans la variable PATH, la fonction ignorera son ajout.
+        La fonction ajoutera un nouveau chemin Ã Â  la variable d'environnement PATH, en s'assurant qu'il ne s'agit pas d'un doublon.
+        Si le nouveau chemin est dÃ©jÃ Â  dans la variable PATH, la fonction ignorera son ajout.
         Cette fonction fonctionne aux niveaux utilisateur et machine.
 
         .PARAMETER NewPath
-        Le nouveau chemin du répertoire à  ajouter à  la variable d'environnement PATH.
+        Le nouveau chemin du rÃ©pertoire Ã Â  ajouter Ã Â  la variable d'environnement PATH.
 
         .EXAMPLE
         Update-PathEnvironmentVariable -NewPath "C:\NewDirectory"
-        Cette commande ajoutera le répertoire "C:\NewDirectory" à  la variable PATH aux niveaux utilisateur et machine.
+        Cette commande ajoutera le rÃ©pertoire "C:\NewDirectory" Ã Â  la variable PATH aux niveaux utilisateur et machine.
     #>
     param(
         [string]$NewPath
@@ -392,14 +392,14 @@ function Update-PathEnvironmentVariable {
 function Handle-Error {
     <#
         .SYNOPSIS
-            Gère les erreurs courantes pouvant survenir lors dâ€™un processus dâ€™installation.
+            GÃ¨re les erreurs courantes pouvant survenir lors dÃ¢â‚¬â„¢un processus dÃ¢â‚¬â„¢installation.
 
         .DESCRIPTION
-            Cette fonction prend un objet ErrorRecord et vérifie certains codes d'erreur connus.
-            En fonction du code d'erreur, il écrit des messages d'avertissement appropriés ou renvoie l'erreur.
+            Cette fonction prend un objet ErrorRecord et vÃ©rifie certains codes d'erreur connus.
+            En fonction du code d'erreur, il Ã©crit des messages d'avertissement appropriÃ©s ou renvoie l'erreur.
 
         .PARAMETER ErrorRecord
-            Objet ErrorRecord qui représente lâ€™erreur détectée. Cet objet contient des informations sur l'erreur, y compris l'exception levée.
+            Objet ErrorRecord qui reprÃ©sente lÃ¢â‚¬â„¢erreur dÃ©tectÃ©e. Cet objet contient des informations sur l'erreur, y compris l'exception levÃ©e.
 
         .EXAMPLE
             try {
@@ -409,71 +409,71 @@ function Handle-Error {
             }
             Cet exemple montre comment vous pouvez utiliser la fonction Handle-Error dans un bloc try-catch.
             Si une erreur se produit dans le bloc try, le bloc catch l'attrape et appelle Handle-Error,
-            passer l'erreur (représentée par la variable $_) à  la fonction.
+            passer l'erreur (reprÃ©sentÃ©e par la variable $_) Ã Â  la fonction.
     #>
     param($ErrorRecord)
 
     # Stocker la valeur actuelle
     $OriginalErrorActionPreference = $ErrorActionPreference
 
-    # Prèt à  continuer silencieusement
+    # PrÃ¨t Ã Â  continuer silencieusement
     $ErrorActionPreference = 'SilentlyContinue'
 
     if ($ErrorRecord.Exception.Message -match '0x80073D06') {
-        Write-Warning "Version supérieure déjà  installée."
-        Write-Warning "ça va, je continue..."
+        Write-Warning "Version supÃ©rieure dÃ©jÃ Â  installÃ©e."
+        Write-Warning "Ã§a va, je continue..."
     } elseif ($ErrorRecord.Exception.Message -match '0x80073CF0') {
-        Write-Warning "Mème version déjà  installée."
-        Write-Warning "ça va, je continue..."
+        Write-Warning "MÃ¨me version dÃ©jÃ Â  installÃ©e."
+        Write-Warning "Ã§a va, je continue..."
     } elseif ($ErrorRecord.Exception.Message -match '0x80073D02') {
-        # Arrètez l'exécution et renvoyez le ErrorRecord afin que le bloc try/catch appelant renvoie l'erreur
+        # ArrÃ¨tez l'exÃ©cution et renvoyez le ErrorRecord afin que le bloc try/catch appelant renvoie l'erreur
         Write-Warning "Resources modified are in-use. Try closing Windows Terminal / PowerShell / Command Prompt and try again."
-        Write-Warning "Si le problème persiste, redémarrez votre ordinateur."
+        Write-Warning "Si le problÃ¨me persiste, redÃ©marrez votre ordinateur."
         return $ErrorRecord
     } elseif ($ErrorRecord.Exception.Message -match 'Unable to connect to the remote server') {
-        Write-Warning "Impossible de se connecter à  Internet pour télécharger les fichiers requis."
-        Write-Warning "Essayez à  nouveau d'exécuter le script et assurez-vous que vous ètes connecté à  Internet.."
-        Write-Warning "Parfois, le serveur nuget.org est en panne, vous devrez peut-ètre réessayer plus tard.."
+        Write-Warning "Impossible de se connecter Ã Â  Internet pour tÃ©lÃ©charger les fichiers requis."
+        Write-Warning "Essayez Ã Â  nouveau d'exÃ©cuter le script et assurez-vous que vous Ã¨tes connectÃ© Ã Â  Internet.."
+        Write-Warning "Parfois, le serveur nuget.org est en panne, vous devrez peut-Ã¨tre rÃ©essayer plus tard.."
         return $ErrorRecord
     } elseif ($ErrorRecord.Exception.Message -match "The remote name could not be resolved") {
-        Write-Warning "Impossible de se connecter à  Internet pour télécharger les fichiers requis."
-        Write-Warning "Essayez à  nouveau d'exécuter le script et assurez-vous que vous ètes connecté à  Internet."
+        Write-Warning "Impossible de se connecter Ã Â  Internet pour tÃ©lÃ©charger les fichiers requis."
+        Write-Warning "Essayez Ã Â  nouveau d'exÃ©cuter le script et assurez-vous que vous Ã¨tes connectÃ© Ã Â  Internet."
         Write-Warning "Assurez-vous que DNS fonctionne correctement sur votre ordinateur."
     } else {
-        # Pour les autres erreurs, nous devons arrèter l'exécution et renvoyer le ErrorRecord afin que le bloc try/catch appelant renvoie l'erreur
+        # Pour les autres erreurs, nous devons arrÃ¨ter l'exÃ©cution et renvoyer le ErrorRecord afin que le bloc try/catch appelant renvoie l'erreur
         return $ErrorRecord
     }
 
-    # Réinitialiser à  la valeur d'origine
+    # RÃ©initialiser Ã Â  la valeur d'origine
     $ErrorActionPreference = $OriginalErrorActionPreference
 }
 
 function Cleanup {
     <#
         .SYNOPSIS
-            Supprime un fichier ou un répertoire spécifié sans demander de confirmation ni afficher d'erreurs.
+            Supprime un fichier ou un rÃ©pertoire spÃ©cifiÃ© sans demander de confirmation ni afficher d'erreurs.
 
         .DESCRIPTION
-            Cette fonction prend un chemin vers un fichier ou un répertoire et le supprime sans demander de confirmation ni afficher d'erreurs.
-            Si le chemin est un répertoire, la fonction supprimera le répertoire et tout son contenu.
+            Cette fonction prend un chemin vers un fichier ou un rÃ©pertoire et le supprime sans demander de confirmation ni afficher d'erreurs.
+            Si le chemin est un rÃ©pertoire, la fonction supprimera le rÃ©pertoire et tout son contenu.
 
         .PARAMETER Path
-            Le chemin du fichier ou du répertoire à  supprimer.
+            Le chemin du fichier ou du rÃ©pertoire Ã Â  supprimer.
 
         .PARAMETER Recurse
-           Si le chemin est un répertoire, ce commutateur spécifie s'il faut supprimer le répertoire et tout son contenu.
+           Si le chemin est un rÃ©pertoire, ce commutateur spÃ©cifie s'il faut supprimer le rÃ©pertoire et tout son contenu.
 
         .EXAMPLE
             Cleanup -Path "C:\Temp"
-            Cet exemple supprime le répertoire "C:\Temp" et tout son contenu.
+            Cet exemple supprime le rÃ©pertoire "C:\Temp" et tout son contenu.
 
         .EXAMPLE
             Cleanup -Path "C:\Temp" -Recurse
-            Cet exemple supprime le répertoire "C:\Temp" et tout son contenu.
+            Cet exemple supprime le rÃ©pertoire "C:\Temp" et tout son contenu.
 
         .EXAMPLE
             Cleanup -Path "C:\Temp\file.txt"
-            Cet exemple supprime le fichier Â« C:\Temp\file.txt Â».
+            Cet exemple supprime le fichier Ã‚Â« C:\Temp\file.txt Ã‚Â».
     #>
     param (
         [string]$Path,
@@ -500,39 +500,39 @@ function Cleanup {
 function Install-Prerequisite {
     <#
         .SYNOPSIS
-        Télécharge et installe un prérequis pour Winget.
+        TÃ©lÃ©charge et installe un prÃ©requis pour Winget.
 
         .DESCRIPTION
-        Cette fonction prend un nom, une version, une URL, une URL alternative, un type de contenu et un corps, puis télécharge et installe le prérequis.
+        Cette fonction prend un nom, une version, une URL, une URL alternative, un type de contenu et un corps, puis tÃ©lÃ©charge et installe le prÃ©requis.
 
         .PARAMETER Name
-        Le nom du prérequis.
+        Le nom du prÃ©requis.
 
         .PARAMETER Version
-        La version du prérequis.
+        La version du prÃ©requis.
 
         .PARAMETER Url
-        L'URL du prérequis.
+        L'URL du prÃ©requis.
 
         .PARAMETER AlternateUrl
-        Lâ€™URL alternative du prérequis.
+        LÃ¢â‚¬â„¢URL alternative du prÃ©requis.
 
         .PARAMETER ContentType
-        Le type de contenu du prérequis..
+        Le type de contenu du prÃ©requis..
 
         .PARAMETER Body
-        Le corps du prérequis.
+        Le corps du prÃ©requis.
 
         .PARAMETER NupkgVersion
-        La version nupkg du prérequis.
+        La version nupkg du prÃ©requis.
 
         .PARAMETER AppxFileVersion
-        La version du fichier appx du prérequis.
+        La version du fichier appx du prÃ©requis.
 
         .EXAMPLE
         Install-Prerequisite -Name "VCLibs" -Version "14.00" -Url "https://store.rg-adguard.net/api/GetFiles" -AlternateUrl "https://aka.ms/Microsoft.VCLibs.$arch.14.00.Desktop.appx" -ContentType "application/x-www-form-urlencoded" -Body "type=PackageFamilyName&url=Microsoft.VCLibs.140.00_8wekyb3d8bbwe&ring=RP&lang=en-US"
 
-        Where $arch est le type d'architecture du système actuel.
+        Where $arch est le type d'architecture du systÃ¨me actuel.
     #>
     param (
         [string]$Name,
@@ -547,7 +547,7 @@ function Install-Prerequisite {
     $osVersion = Get-OSInfo
     $arch = $osVersion.Architecture
 
-    Write-Section "Téléchargement et installation ${arch} ${Name}..."
+    Write-Section "TÃ©lÃ©chargement et installation ${arch} ${Name}..."
 
     $ThrowReason = @{
         Message = ""
@@ -568,7 +568,7 @@ function Install-Prerequisite {
         # Si Server 2022 ou Windows 10, forcer la version hors magasin de VCLibs (return true)
         $messageTemplate = "{OS} detected. Using {DOMAIN} version of {NAME}."
 
-        # Déterminer les informations spécifiques au système d'exploitation
+        # DÃ©terminer les informations spÃ©cifiques au systÃ¨me d'exploitation
         $osType = $osVersion.Type
         $osNumericVersion = $osVersion.NumericVersion
 
@@ -585,12 +585,12 @@ function Install-Prerequisite {
         }
 
         # ============================================================================ #
-        # Méthode principale
+        # MÃ©thode principale
         # ============================================================================ #
 
         $url = Invoke-WebRequest -Uri $Url -Method "POST" -ContentType $ContentType -Body $Body -UseBasicParsing | ForEach-Object Links | Where-Object outerHTML -match "$Name.+_${arch}__8wekyb3d8bbwe.appx" | ForEach-Object href
 
-        # Si l'URL est vide, essayez la méthode alternative
+        # Si l'URL est vide, essayez la mÃ©thode alternative
         if ($url -eq "") {
             $ThrowReason.Message = "URL is empty"
             $ThrowReason.Code = 2
@@ -604,7 +604,7 @@ function Install-Prerequisite {
         Add-AppxPackage $url -ErrorAction Stop
         Write-Output "`n$Name installed successfully."
     } catch {
-        # Méthode alternative
+        # MÃ©thode alternative
         if ($_.Exception.Message -match '0x80073D02') {
             # If resources in use exception, fail immediately
             Handle-Error $_
@@ -614,9 +614,9 @@ function Install-Prerequisite {
         try {
             $url = $AlternateUrl
 
-            # Throw reason si une autre méthode est requise
+            # Throw reason si une autre mÃ©thode est requise
             if ($ThrowReason.Code -eq 0) {
-                Write-Warning "Erreur lors de la tentative de téléchargement ou d'installation $Name. Essayer une autre méthode..."
+                Write-Warning "Erreur lors de la tentative de tÃ©lÃ©chargement ou d'installation $Name. Essayer une autre mÃ©thode..."
             } else {
                 Write-Warning $ThrowReason.Message
             }
@@ -627,7 +627,7 @@ function Install-Prerequisite {
                 throw "L'URL est vide"
             }
 
-            # Logique spécifique pour la méthode alternative VCLibs
+            # Logique spÃ©cifique pour la mÃ©thode alternative VCLibs
             if ($Name -eq "VCLibs") {
                 if ($DebugMode) {
                     Write-Output "URL: $($url)`n"
@@ -664,7 +664,7 @@ function Install-Prerequisite {
                 }
                 Invoke-WebRequest -Uri $uiXaml.url -OutFile $uiXaml.nupkgFilename
 
-                # Vérifiez si le dossier existe et supprimez-le si nécessaire (cela se produira si DisableCleanup est $true or $false)
+                # VÃ©rifiez si le dossier existe et supprimez-le si nÃ©cessaire (cela se produira si DisableCleanup est $true or $false)
                 Cleanup -Path $uiXaml.nupkgFolder -Recurse
 
                 # Extracting
@@ -698,7 +698,7 @@ function Install-Prerequisite {
                 }
             }
         } catch {
-            # Si vous ne parvenez pas à  vous connecter au serveur distant et à  Windows 10 ou Server 2022, afficher un message d'avertissement
+            # Si vous ne parvenez pas Ã Â  vous connecter au serveur distant et Ã Â  Windows 10 ou Server 2022, afficher un message d'avertissement
             $ShowOldVersionMessage = $False
             if ($_.Exception.Message -match "Unable to connect to the remote server") {
                 # Determine the correct Windows caption and set $ShowOutput to $True if conditions are met
@@ -739,33 +739,33 @@ if ($CheckForUpdate) {
 
 # Heading
 Write-Output "winget-install $CurrentVersion"
-Write-Output "TPour vérifier les mises à  jour, run winget-install -CheckForUpdate"
+Write-Output "TPour vÃ©rifier les mises Ã Â  jour, run winget-install -CheckForUpdate"
 
-# Définir la version du système d'exploitation
+# DÃ©finir la version du systÃ¨me d'exploitation
 $osVersion = Get-OSInfo
 
-# Définir le type d'architecture
+# DÃ©finir le type d'architecture
 $arch = $osVersion.Architecture
 
 # S'il s'agit d'un poste de travail, assurez-vous qu'il s'agit de Windows 10+
 if ($osVersion.Type -eq "Workstation" -and $osVersion.NumericVersion -lt 10) {
-    Write-Error "Winget est uniquement compatible avec Windows 10 ou supérieur."
+    Write-Error "Winget est uniquement compatible avec Windows 10 ou supÃ©rieur."
     exit 1
 }
 
-# S'il s'agit d'un poste de travail avec Windows 10, assurez-vous qu'il s'agit de la version 1809 ou supérieure
+# S'il s'agit d'un poste de travail avec Windows 10, assurez-vous qu'il s'agit de la version 1809 ou supÃ©rieure
 if ($osVersion.Type -eq "Workstation" -and $osVersion.NumericVersion -eq 10 -and $osVersion.ReleaseId -lt 1809) {
-    Write-Error "Winget est uniquement compatible avec Windows 10 version 1809 ou supérieure."
+    Write-Error "Winget est uniquement compatible avec Windows 10 version 1809 ou supÃ©rieure."
     exit 1
 }
 
-# Si c'est un serveur, il doit ètre 2022+
+# Si c'est un serveur, il doit Ã¨tre 2022+
 if ($osVersion.Type -eq "Server" -and $osVersion.NumericVersion -lt 2022) {
     Write-Error "Winget est uniquement compatible avec Windows Server 2022+."
     exit 1
 }
 
-# Vérifiez si Winget est déjà  installé
+# VÃ©rifiez si Winget est dÃ©jÃ Â  installÃ©
 if (Get-WingetStatus) {
     if ($Force -eq $false) {
         Write-Output "winget is already installed, exiting..."
@@ -774,12 +774,12 @@ if (Get-WingetStatus) {
 }
 
 # ============================================================================ #
-# Début du processus d'installation
+# DÃ©but du processus d'installation
 # ============================================================================ #
 
 try {
     # ============================================================================ #
-    # Conditions préalables à  l'installation
+    # Conditions prÃ©alables Ã Â  l'installation
     # ============================================================================ #
 
     # VCLibs
@@ -795,9 +795,9 @@ try {
     $TempFolder = Get-TempFolder
 
     # Output
-    Write-Section "Téléchargement et installation de winget..."
+    Write-Section "TÃ©lÃ©chargement et installation de winget..."
 
-    Write-Output "Récupération de l'URL de téléchargement de Winget depuis GitHub......"
+    Write-Output "RÃ©cupÃ©ration de l'URL de tÃ©lÃ©chargement de Winget depuis GitHub......"
     $wingetUrl = Get-WingetDownloadUrl -Match "msixbundle"
     $wingetPath = Join-Path -Path $tempFolder -ChildPath "winget.msixbundle"
     $wingetLicenseUrl = Get-WingetDownloadUrl -Match "License1.xml"
@@ -808,14 +808,14 @@ try {
         throw "URL is empty"
     }
 
-    Write-Output "Téléchargement de winget..."
+    Write-Output "TÃ©lÃ©chargement de winget..."
     if ($DebugMode) {
         Write-Output "`nURL: $wingetUrl"
         Write-Output "Saving as: $wingetPath"
     }
     Invoke-WebRequest -Uri $wingetUrl -OutFile $wingetPath
 
-    Write-Output "Téléchargement de la  license..."
+    Write-Output "TÃ©lÃ©chargement de la  license..."
     if ($DebugMode) {
         Write-Output "`nURL: $wingetLicenseUrl"
         Write-Output "Saving as: $wingetLicensePath"
@@ -863,19 +863,19 @@ try {
     # Fini ! end ! lol !
     # ============================================================================ #
 
-    Write-Section "Installation complète!"
+    Write-Section "Installation complÃ¨te!"
 
     # Timeout for 5 seconds to check winget
-    Write-Output "Vérifions si Winget est installé et fonctionne..."
+    Write-Output "VÃ©rifions si Winget est installÃ© et fonctionne..."
     Start-Sleep -Seconds 3
 
-    # Vérifiez si Winget est installé
+    # VÃ©rifiez si Winget est installÃ©
     if (Get-WingetStatus -eq $true) {
-        Write-Output "Winget est installé et fonctionne maintenant, vous pouvez continuer et l'utiliser."
+        Write-Output "Winget est installÃ© et fonctionne maintenant, vous pouvez continuer et l'utiliser."
     } else {
-        Write-Warning "winget est installé mais n'est pas détecté comme une commande. Essayez d'utiliser Winget maintenant. Si cela ne fonctionne pas, attendez environ 1 minute et réessayez (c'est parfois retardé). Essayez également de redémarrer votre ordinateur"
-        Write-Warning "Si vous redémarrez votre ordinateur et que la commande n'est toujours pas reconnue, veuillez lire la section Dépannage du README: https://github.com/sbeteta42/winget-install#troubleshooting`n"
-        Write-Warning "Assurez-vous d'avoir la dernière version du script en exécutant cette commande: $PowerShellGalleryName -CheckForUpdate"
+        Write-Warning "winget est installÃ© mais n'est pas dÃ©tectÃ© comme une commande. Essayez d'utiliser Winget maintenant. Si cela ne fonctionne pas, attendez environ 1 minute et rÃ©essayez (c'est parfois retardÃ©). Essayez Ã©galement de redÃ©marrer votre ordinateur"
+        Write-Warning "Si vous redÃ©marrez votre ordinateur et que la commande n'est toujours pas reconnue, veuillez lire la section DÃ©pannage du README: https://github.com/sbeteta42/winget-install#troubleshooting`n"
+        Write-Warning "Assurez-vous d'avoir la derniÃ¨re version du script en exÃ©cutant cette commande: $PowerShellGalleryName -CheckForUpdate"
     }
 } catch {
     # ============================================================================ #
@@ -883,8 +883,8 @@ try {
     # ============================================================================ #
 
     Write-Section "AVERTISSEMENT! Une erreur s'est produite lors de l'installation!"
-    Write-Warning "Si les messages ci-dessus ne vous aident pas et que le problème persiste, veuillez lire la section Dépannage du README: https://github.com/sbeteta42/winget-install#troubleshooting"
-    Write-Warning "Assurez-vous d'avoir la dernière version du script en exécutant cette commande: $PowerShellGalleryName -CheckForUpdate"
+    Write-Warning "Si les messages ci-dessus ne vous aident pas et que le problÃ¨me persiste, veuillez lire la section DÃ©pannage du README: https://github.com/sbeteta42/winget-install#troubleshooting"
+    Write-Warning "Assurez-vous d'avoir la derniÃ¨re version du script en exÃ©cutant cette commande: $PowerShellGalleryName -CheckForUpdate"
 
     # If it's not 0x80073D02 (resources in use), show error
     if ($_.Exception.Message -notmatch '0x80073D02') {
